@@ -1,0 +1,14 @@
+services:
+  backend:
+    build:
+      context: .
+      target: builder
+      command: go run /app/cmd/vault/main.go
+    ports:
+      - 3099:3099
+    env_file:
+      - ./env/.env
+    volumes:
+      - .:/app
+    stdin_open: true
+    tty: true
