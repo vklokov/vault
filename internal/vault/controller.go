@@ -37,7 +37,7 @@ func (v *Vault) Get(key string) string {
 
 func (v *Vault) Upsert(key, value string) error {
 	if err := v.storage.Upsert(key, value); err != nil {
-		return fmt.Errorf("failed to upsert: %v", err)
+		return fmt.Errorf("failed to upsert: %w", err)
 	}
 
 	return nil
@@ -45,7 +45,7 @@ func (v *Vault) Upsert(key, value string) error {
 
 func (v *Vault) Destroy(key string) error {
 	if err := v.storage.Destroy(key); err != nil {
-		return fmt.Errorf("failed to destroy: %v", err)
+		return fmt.Errorf("failed to destroy: %w", err)
 	}
 
 	return nil
