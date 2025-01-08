@@ -1,5 +1,7 @@
 package vault
 
+import "path/filepath"
+
 type Records map[string]string
 
 type Storable interface {
@@ -12,13 +14,14 @@ type Storable interface {
 }
 
 const FILE_STORAGE = "file"
-const FILE_STORAGE_NAME = "storage.enc"
 const MEMORY_STORAGE = "memory"
+const FILE_STORAGE_NAME = "storage.enc"
 
 func newStorage(config Config) Storable {
 	switch config.Storage {
 	case FILE_STORAGE:
-		return &FileStorage{filename: FILE_STORAGE_NAME, secret: config.Secret}
+		filename := filepath.Join(projectRoot(), FILE_STORAGE_NAME)
+		return &FileStorage{filename: filename, secret: config.Secret}
 	default:
 		return &MemoryStorage{}
 	}

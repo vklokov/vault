@@ -4,8 +4,18 @@ import (
 	"encoding/json"
 	"io"
 	"os"
+	"path/filepath"
 	"sync"
 )
+
+func projectRoot() string {
+	ex, err := os.Executable()
+	if err != nil {
+		panic("unable to access root dir")
+	}
+
+	return filepath.Dir(ex)
+}
 
 var mu sync.Mutex
 
@@ -31,7 +41,7 @@ func (s *FileStorage) Init() error {
 	}
 
 	if len(body) != 0 {
-		data, err := decryptSrting(string(body), os.Getenv("VAULT_SECRET"))
+		data, err := decryptSrting(string(body), s.secret)
 		if err != nil {
 			return err
 		}
@@ -97,7 +107,7 @@ func (s *FileStorage) rewrite() error {
 		return err
 	}
 
-	body, err := encryptString(string(data), os.Getenv("VAULT_SECRET"))
+	body, err := encryptString(string(data), s.secret)
 	if err != nil {
 		return err
 	}
@@ -110,6 +120,11 @@ func (s *FileStorage) rewrite() error {
 		return err
 	}
 	defer f.Close()
+
+	err = f.Truncate(0)
+	if err != nil {
+		return err
+	}
 
 	f.Write([]byte(body))
 
