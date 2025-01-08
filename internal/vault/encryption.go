@@ -5,7 +5,7 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"encoding/base64"
-	"fmt"
+	"errors"
 	"io"
 )
 
@@ -50,7 +50,7 @@ func decryptSrting(encrypted, secret string) (string, error) {
 
 	// Extract the IV (Initialization Vector)
 	if len(ciphertext) < aes.BlockSize {
-		return "", fmt.Errorf("ciphertext too short")
+		return "", errors.New("ciphertext too short")
 	}
 
 	iv := ciphertext[:aes.BlockSize]
